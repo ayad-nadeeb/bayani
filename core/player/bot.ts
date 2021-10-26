@@ -1,14 +1,15 @@
+import { Bayani } from '../bayanis/bayani';
 import { BayaniList } from '../obj/bayanis';
 import { Player } from './player';
 
-class Bot implements Player {
+export class Bot implements Player {
 	health: number;
 	totalHealth: number;
 	name: string;
 	bayanis: BayaniList;
 
 	constructor(
-		health = 0, 
+		health = 0,
 		totalHealth = 0,
 		name = 'Bot',
 		bayanis: BayaniList = { bayani: []},
@@ -19,12 +20,24 @@ class Bot implements Player {
 		this.bayanis = bayanis;
 	}
 
-	pickBayani(): void {
-		console.log('pick bayani');
+	pickBayani(bayani: Bayani): void {
+		if (this.bayanis.bayani.length < 5) {
+			this.bayanis.bayani.push(bayani);
+			this.totalHealth += bayani.attribute.totalHealth;
+			this.health = this.totalHealth;
+			return;
+		}
+	}
+
+	isReady(): boolean {
+		if (this.bayanis.bayani.length < 5) return false;
+		return true;
 	}
 
 	calculateHealth(): void {
-		console.log('calculateHealth');
+		let sum = 0;
+		for (const b of this.bayanis.bayani) sum += b.attribute.health;
+		this.health = (sum / this.totalHealth) * 100;
 	}
 }
 
